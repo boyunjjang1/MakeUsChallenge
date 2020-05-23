@@ -12,7 +12,7 @@ const secret_config = require('../../../config/secret')
  01.signUp API = 회원가입
  */
 exports.signUp = async function(req, res) {
-  const { id, password, name } = req.body
+  const { id, password, name, type } = req.body
 
   if (!id)
     return res.json({
@@ -81,10 +81,10 @@ exports.signUp = async function(req, res) {
       const hashedPassword = await crypto.createHash('sha512').update(password).digest('hex')
 
       const insertUserInfoQuery = `
-                INSERT INTO User(id, password, name)
-                VALUES (?, ?, ?);
+                INSERT INTO User(id, password, name, type)
+                VALUES (?, ?, ?, ?);
                     `
-      const insertUserInfoParams = [ id, hashedPassword, name ]
+      const insertUserInfoParams = [ id, hashedPassword, name, type ]
       await connection.query(insertUserInfoQuery, insertUserInfoParams)
 
       await connection.commit() // COMMIT
@@ -231,7 +231,7 @@ exports.userInfo = async function (req, res) {
     const connection = await pool.getConnection(async (conn) => conn)
     try {
       const selectUserInfoQuery = `
-                    SELECT id, name
+                    SELECT id, name,type
                     FROM User
                     WHERE idUser = ? AND status != 'DELETED';
                     `

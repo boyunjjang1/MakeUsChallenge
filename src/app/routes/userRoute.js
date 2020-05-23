@@ -7,6 +7,7 @@ module.exports = function (app) {
 
     app.get('/user/:userId',jwtMiddleware, user.userInfo); // 내 정보
     
+    
     app.get('/check', jwtMiddleware, user.check);
 
 };
