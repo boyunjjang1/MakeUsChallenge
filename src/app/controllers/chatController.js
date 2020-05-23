@@ -11,8 +11,10 @@ const {
   // 채팅방 목록 보여주기
   exports.chatList = async function (req, res) {
     const token = req.verifiedToken
-    const connection = await pool.getConnection(async (conn) => conn)
+
     try {
+      const connection = await pool.getConnection(async (conn) => conn)
+      
       const ChatRoomListQuery = `SELECT idchatRoom, roomName, categoryName, roomOwner
       FROM chatRoom;`
       const [rows] = await connection.query(ChatRoomListQuery)
@@ -41,8 +43,23 @@ const {
 
     const json = req.body;
 
-    const connection = await pool.getConnection(async (conn) => conn)
+    
     try {
+        const connection = await pool.getConnection(async (conn) => conn)
+            // 채팅방 중복확인
+            const selectChatRoomQuery = `SELECT roomName FROM chatRoom WHERE roomName=?;`
+  
+            const [chatRows] = await connection.query(selectChatRoomQuery,[json.roomName]);
+
+            if(chatRows.length > 0){
+                connection.release()
+                return res.json({
+                    isSuccess: false,
+                    code: 246,
+                    message: '중복된 방 이름 입니다.',
+                })
+            }
+
       const chatRoomInitQuery = `INSERT INTO chatRoom(roomName, categoryName, roomOwner)
       VALUES (?,?,?);`
     
