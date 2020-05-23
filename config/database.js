@@ -4,7 +4,7 @@ const {
 } = require('./winston');
 
 const pool = mysql.createPool({
-    host: 'ec2-13-209-98-193.ap-northeast-2.compute.amazonaws.com',
+    host: '13.125.20.10',
     user: 'boyumi',
     password: 'ruaelqhdbs2@',
     database: 'MakeUs'

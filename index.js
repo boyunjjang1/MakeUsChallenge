@@ -24,23 +24,7 @@ room.on('connection', (socket)=>{
         // roomUUID = uuidv4();
 
         roomUUID = data;
-        // try{
-
-        //     const connection = await pool.getConnection(async(conn)=> conn)
-        //     const insertRoomQuery = `INSERT INTO ChatRoom (roomName, chatRoomID)
-        //     VALUES (?,?);`
-        //     const insertRoomParams = [data,roomUUID];
-        //     await connection.query(insertRoomQuery, insertRoomParams);
-        //     await connection.commit()
-        //     connection.release();
-
-        // }catch{
-        //     await connection.rollback()
-        //     connection.release();
-        //     logger.error(` - chatRoom Query error\n: ${err.message}`)
-        //     return res.status(500).send(`Error: ${err.message}`)
-        // }
-
+    
         console.log('createRoom')
         console.log(roomUUID)
         socket.join(roomUUID);
@@ -56,8 +40,12 @@ room.on('connection', (socket)=>{
     })
 
     socket.on('sendMsgFromClient', (msg) => {
-        console.log("helo?")
-        socket.to(roomUUID).emit('sendMsgFromServer', msg);
+        console.log(msg)
+
+        let mess = {message: msg};
+        console.log(mess)
+        
+        socket.to(roomUUID).emit('sendMsgFromServer', mess);
     })
 })
 

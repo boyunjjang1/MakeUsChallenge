@@ -42,7 +42,6 @@ const {
     const token = req.verifiedToken
 
     const json = req.body;
-
     
     try {
         const connection = await pool.getConnection(async (conn) => conn)
