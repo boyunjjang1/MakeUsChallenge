@@ -1,5 +1,6 @@
 const express = require('./config/express');
 const {logger} = require('./config/winston');
+const { pool } = require('./config/database');
 const http = require('http');
 const sio = require('socket.io');
 const fs = require('fs');
@@ -13,7 +14,6 @@ const server = http.createServer(express()).listen(port);
 io = sio(server)
 
 
-
 const room = io.of('/room')
 
 room.on('connection', (socket)=>{
@@ -21,7 +21,26 @@ room.on('connection', (socket)=>{
 
     let roomUUID;
     socket.on('createRoom',(data) => {
-        roomUUID = uuidv4();
+        // roomUUID = uuidv4();
+
+        roomUUID = data;
+        // try{
+
+        //     const connection = await pool.getConnection(async(conn)=> conn)
+        //     const insertRoomQuery = `INSERT INTO ChatRoom (roomName, chatRoomID)
+        //     VALUES (?,?);`
+        //     const insertRoomParams = [data,roomUUID];
+        //     await connection.query(insertRoomQuery, insertRoomParams);
+        //     await connection.commit()
+        //     connection.release();
+
+        // }catch{
+        //     await connection.rollback()
+        //     connection.release();
+        //     logger.error(` - chatRoom Query error\n: ${err.message}`)
+        //     return res.status(500).send(`Error: ${err.message}`)
+        // }
+
         console.log('createRoom')
         console.log(roomUUID)
         socket.join(roomUUID);
