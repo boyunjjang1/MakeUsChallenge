@@ -4,6 +4,8 @@ module.exports = function (app) {
 
     app.route('/app/signUp').post(user.signUp); // 회원가입
     app.route('/app/signIn').post(user.signIn); // 로그인
+
+    app.get('/user/:userId',jwtMiddleware, user.userInfo); // 내 정보
     
     app.get('/check', jwtMiddleware, user.check);
 

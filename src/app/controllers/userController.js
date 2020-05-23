@@ -221,3 +221,38 @@ exports.check = async function(req, res) {
     info: req.verifiedToken,
   })
 }
+
+
+// 내 정보보기
+exports.userInfo = async function (req, res) {
+  const token = req.verifiedToken
+  console.log(token)
+  try {
+    const connection = await pool.getConnection(async (conn) => conn)
+    try {
+      const selectUserInfoQuery = `
+                    SELECT id, name
+                    FROM User
+                    WHERE idUser = ? AND status != 'DELETED';
+                    `
+      console.log(token.name)
+      const selectUserInfoParams = token.idx
+      const [userInfoRows] = await connection.query(selectUserInfoQuery, selectUserInfoParams)
+      connection.release()
+      res.json({
+        userInfo: userInfoRows,
+        isSuccess: true,
+        code: 200,
+        message: '정보조회 성공',
+      })
+    } catch (err) {
+      logger.error(`App - userInfo Query error\n: ${JSON.stringify(err)}`)
+      console.log(err)
+      connection.release()
+      return false
+    }
+  } catch (err) {
+    logger.error(`App - userInfo DB Connection error\n: ${JSON.stringify(err)}`)
+    return false
+  }
+}
