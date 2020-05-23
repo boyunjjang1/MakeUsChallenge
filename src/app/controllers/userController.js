@@ -133,7 +133,7 @@ exports.signIn = async function(req, res) {
       const selectUserInfoQuery = `
                 SELECT id, password, name, status 
                 FROM User 
-                WHERE id = ? AND statusd != 'DELETED';
+                WHERE id = ? AND status != 'DELETED';
                 `
 
       let selectUserInfoParams = [ id ]
@@ -150,7 +150,7 @@ exports.signIn = async function(req, res) {
       }
 
       const hashedPassword = await crypto.createHash('sha512').update(password).digest('hex')
-      if (userInfoRows[0].pswd !== hashedPassword) {
+      if (userInfoRows[0].password !== hashedPassword) {
         connection.release()
         return res.json({
           isSuccess: false,
@@ -179,7 +179,6 @@ exports.signIn = async function(req, res) {
       let token = await jwt.sign(
         {
           id: userInfoRows[0].id,
-          email: email,
           password: hashedPassword,
           name: userInfoRows[0].name,
         }, // 토큰의 내용(payload)
