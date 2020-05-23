@@ -27,12 +27,6 @@ exports.signUp = async function(req, res) {
       message: '아이디는 10자리 미만으로 입력해주세요.',
     })
 
-  if (!idReg.test(id))
-    return res.json({
-      isSuccess: false,
-      code: 303,
-      message: '아이디 형식을 정확하게 입력해주세요.',
-    })
 
   if (!password)
     return res.json({
@@ -66,7 +60,7 @@ exports.signUp = async function(req, res) {
       // 이메일 중복 확인
       const selectEmailQuery = `
                 SELECT id, name 
-                FROM UserInfo 
+                FROM User
                 WHERE id = ?;
                 `
       const selectEmailParams = [ id ]
@@ -87,10 +81,10 @@ exports.signUp = async function(req, res) {
       const hashedPassword = await crypto.createHash('sha512').update(password).digest('hex')
 
       const insertUserInfoQuery = `
-                INSERT INTO User(id, passsword, name)
+                INSERT INTO User(id, password, name)
                 VALUES (?, ?, ?);
                     `
-      const insertUserInfoParams = [ id, hashedPassword, nickname ]
+      const insertUserInfoParams = [ id, hashedPassword, name ]
       await connection.query(insertUserInfoQuery, insertUserInfoParams)
 
       await connection.commit() // COMMIT
@@ -187,7 +181,7 @@ exports.signIn = async function(req, res) {
           id: userInfoRows[0].id,
           email: email,
           password: hashedPassword,
-          nickname: userInfoRows[0].nickname,
+          name: userInfoRows[0].name,
         }, // 토큰의 내용(payload)
         secret_config.jwtsecret, // 비밀 키
         {

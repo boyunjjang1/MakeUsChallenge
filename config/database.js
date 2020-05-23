@@ -4,10 +4,10 @@ const {
 } = require('./winston');
 
 const pool = mysql.createPool({
-    host: 'hime.boyumi.net',
-    user: 'ubuntu',
-    password: '123456',
-    database: 'Community'
+    host: 'ec2-13-209-98-193.ap-northeast-2.compute.amazonaws.com',
+    user: 'boyumi',
+    password: 'ruaelqhdbs2@',
+    database: 'MakeUs'
 });
 
 module.exports = {
